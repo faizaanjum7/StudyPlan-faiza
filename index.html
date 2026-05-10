@@ -84,11 +84,8 @@
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-header">Subjects</div>
-      <div class="nav-item"><span class="nav-dot" style="background:var(--color-text-info)"></span>Computer Science<span class="badge">3</span></div>
-      <div class="nav-item"><span class="nav-dot" style="background:var(--color-text-success)"></span>Mathematics<span class="badge">2</span></div>
-      <div class="nav-item"><span class="nav-dot" style="background:var(--color-text-purple)"></span>English Lit<span class="badge">1</span></div>
-      <div class="nav-item"><span class="nav-dot" style="background:var(--color-text-warning)"></span>Physics<span class="badge">1</span></div>
-      <div class="add-subject">
+      <div id="subjects-sidebar-list"></div>
+      <div class="add-subject" id="add-subject-btn" role="button" tabindex="0">
         <svg width="14" height="14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Add subject
       </div>
     </div>
@@ -396,8 +393,20 @@
   });
 </script>
 
+<div id="new-subject-modal" class="modal-backdrop" style="display:none; position:fixed; inset:0; z-index:9998; align-items:center; justify-content:center;">
+  <div class="modal-card" style="border-radius:12px; padding:20px; width:320px; box-shadow:0 12px 40px rgba(0,0,0,0.25);">
+    <h3 style="margin:0 0 12px; font-size:18px; font-weight:600;">New subject</h3>
+    <label style="display:block; font-size:12px; margin-bottom:4px;">Subject name</label>
+    <input id="new-subject-name" type="text" style="width:100%; padding:6px; margin-bottom:12px;" placeholder="e.g. History">
+    <label style="display:block; font-size:12px; margin-bottom:6px;">Color</label>
+    <div id="new-subject-colors" class="subject-color-swatches"></div>
+    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+      <button id="new-subject-cancel" class="btn" style="padding:6px 10px;">Cancel</button>
+      <button id="new-subject-save" class="btn btn-primary" style="padding:6px 12px;">Save</button>
+    </div>
+  </div>
+</div>
 
-//ADD TASK MODEL
 <div id="new-task-modal" class="modal-backdrop" style="display:none; position:fixed; inset:0;  z-index:9998; align-items:center; justify-content:center;">
   <div class="modal-card" style=" border-radius:12px; padding:20px; width:320px; box-shadow:0 12px 40px rgba(0,0,0,0.25);">
     <h3 style="margin:0 0 12px; font-size:18px; font-weight:600;">New task</h3>
