@@ -47,6 +47,42 @@
   </nav>
 
   <div class="header-right">
+    <!--Streak Badge-->
+    <div class="streak-badges">
+      <div
+        class="badge-wrapper hidden"
+        id="badge-3-wrapper"
+        title="3 Day Streak"
+      >
+        <img
+          src="/public/medal-3daystreak.svg"
+          alt="3 Day Streak"
+          class="streak-badge"
+        />
+      </div>
+      <div
+        class="badge-wrapper hidden"
+        id="badge-7-wrapper"
+        title="7 Day Streak"
+      >
+        <img
+          src="/public/rocket-7daystreak.svg"
+          alt="7 Day Streak"
+          class="streak-badge"
+        />
+      </div>
+      <div
+        class="badge-wrapper hidden"
+        id="badge-30-wrapper"
+        title="30 Day Streak"
+      >
+        <img
+          src="/public/crown-30andmorestreak.svg"
+          alt="30 Day Streak"
+          class="streak-badge"
+        />
+      </div>
+    </div>
     <button class="profile-btn">Profile</button>
     <button class="profile-btn" id="logout-btn">Logout</button>
   </div>
@@ -96,6 +132,21 @@
     <div class="main">
       <div class="topbar">
         <div class="topbar-title">April 2026</div>
+        <!--Streak-->
+        <div class="streak-display" id="streak-display">
+          <img
+            src="/public/streak-icon.svg"
+            alt="Streak"
+            class="streak-icon"
+            id="streak-icon"
+          />
+          <span id="streak-count">0</span>
+
+           <div class="streak-tooltip" id="streak-tooltip">
+            Complete tasks to build streak & earn cool badges
+          </div>
+
+        </div>
         <button class="btn">Week</button>
         <button class="btn btn-primary"  id="add-task-btn">
           <svg width="12" height="12" fill="none" style="margin-right:2px"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> New task

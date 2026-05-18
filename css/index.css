@@ -140,7 +140,7 @@ body {
 
 /* Calendar */
 .cal-section { padding: 16px 24px; border-bottom: 1px solid var(--color-border-tertiary); flex-shrink: 0; }
-.cal-header { display: flex; align-items: center; margin-bottom: 16px; }
+.cal-header { display: flex; align-items: center; margin-bottom: 16px; justify-content:space-between; }
 .cal-title { font-size: 15px; font-weight: 600; flex: 1; color: var(--color-text-primary); }
 .cal-nav { font-size: 18px; color: var(--color-text-secondary); cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: background 0.2s; }
 .cal-nav:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
@@ -155,6 +155,12 @@ body {
 .cal-legend { display: flex; gap: 16px; margin-top: 16px; font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); justify-content: flex-end; }
 .cal-legend span { display: flex; align-items: center; gap: 6px; }
 .legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+/*Streak*/
+.streak-display { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; }
+.streak-display:hover { background: rgba(0, 0, 0, 0.04); }
+.streak-icon { width: 22px; height: 22px; object-fit: contain; }
+#streak-count { font-size: 20px; font-weight: 700; color: var(--color-text-primary); }
 
 /* Tasks */
 .tasks-section { flex: 1; overflow-y: auto; padding: 0 24px 24px; scroll-behavior: smooth; }
@@ -481,6 +487,112 @@ body {
   align-items: center;
   gap: 12px;
 }
+/* Header right & Badges */
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.streak-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-right: 6px;
+
+  transform: translateY(1px);
+}
+
+.badge-wrapper {
+  width: 45px;
+  height: 45px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background: rgba(0, 0, 0, 0.025);
+
+  transition: all 0.2s ease;
+}
+
+.badge-wrapper:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.streak-badge {
+  width: 30px;
+  height: 30px;
+
+  object-fit: contain;
+
+  transition: all 0.2s ease;
+}
+
+.streak-badge.locked {
+  filter: grayscale(1);
+  opacity: 0.32;
+}
+
+.streak-badge.unlocked {
+  opacity: 0.92;
+}
+
+.badge-wrapper:hover .streak-badge {
+  transform: scale(1.08);
+}
+
+.streak-display {
+  position: relative;
+}
+
+.streak-tooltip {
+  position: absolute;
+
+  top: 36px;
+  left: 50%;
+
+  transform: translateX(-50%) translateY(4px);
+
+  min-width: 220px;
+
+  padding: 10px 12px;
+
+  border-radius: 12px;
+
+  background: #111;
+  color: white;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+
+  text-align: center;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition: all 0.2s ease;
+
+  pointer-events: none;
+
+  z-index: 100;
+}
+
+.streak-display:hover .streak-tooltip {
+  opacity: 1;
+  visibility: visible;
+
+  transform: translateX(-50%) translateY(0);
+}
+
+.hidden {
+  display: none;
+}
 
 .logo {
   width: 40px;
@@ -496,7 +608,7 @@ body {
 
 .header-nav {
   display: flex;
-  gap: 24px;
+  gap: 20px;
 }
 
 .header-nav a {
@@ -511,6 +623,7 @@ body {
 }
 
 .profile-btn {
+  height:40px;
   padding: 8px 16px;
   border: none;
   border-radius: var(--border-radius-md);
@@ -1143,6 +1256,7 @@ body {
 }
 
 .summary-box {
+  position:relative;
   margin-top: 16px;
   padding: 14px;
   background: var(--color-background-secondary);
@@ -1873,6 +1987,7 @@ body {
   cursor: pointer;
   font-weight: 600;
 }
+
 
 /* Footer */
 .site-footer {
