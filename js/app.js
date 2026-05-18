@@ -912,6 +912,19 @@ function renderStreak() {
   if (badge3) badge3.classList.toggle('hidden', streakCount < 3);
   if (badge7) badge7.classList.toggle('hidden', streakCount < 7);
   if (badge30) badge30.classList.toggle('hidden', streakCount < 30);
+
+  const tooltip = document.getElementById('streak-tooltip');
+  if (tooltip) {
+    if (streakCount >= 30) {
+      tooltip.textContent = '30 day badge unlocked';
+    } else if (streakCount >= 7) {
+      tooltip.textContent = '7 day badge unlocked';
+    } else if (streakCount >= 3) {
+      tooltip.textContent = '3 day badge unlocked';
+    } else {
+      tooltip.textContent = 'Complete tasks to build streak & earn cool badges';
+    }
+  }
 }
 
 store.subscribe(renderTasks);
