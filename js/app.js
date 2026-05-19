@@ -191,32 +191,114 @@ function setCircleDasharray() {
   timerPathRemaining.setAttribute("stroke-dasharray", circleDasharray);
 }
 
-function startTimer() {
-  if (timerInterval) return;
-  TIME_LIMIT = getTimerDuration();
-  if (timePassed === 0) timeLeft = TIME_LIMIT;
-  timerDurationInput.disabled = true;
-  timerStartBtn.classList.add('hidden');
-  timerPauseBtn.classList.remove('hidden');
-  
-  timerInterval = setInterval(() => {
-    timePassed += 1;
+let startTime;
+
+function saveTimerState() {
+  localStorage.setItem('focusTimerState', JSON.stringify({
+    TIME_LIMIT,
+    timePassed,
+    isRunning: !!timerInterval,
+    startTime: timerInterval ? startTime : null,
+    durationInput: timerDurationInput.value
+  }));
+}
+
+function loadTimerState() {
+  const saved = localStorage.getItem('focusTimerState');
+  if (!saved) return;
+
+  try {
+    const state = JSON.parse(saved);
+
+    TIME_LIMIT = state.TIME_LIMIT || (25 * 60);
+
+    if (state.isRunning && state.startTime) {
+      const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+      timePassed = elapsed;
+    } else {
+      timePassed = state.timePassed || 0;
+    }
+
     timeLeft = TIME_LIMIT - timePassed;
+
+    if (timeLeft < 0) timeLeft = 0;
+
+    if (state.durationInput) {
+      timerDurationInput.value = state.durationInput;
+    }
+
     timerText.innerHTML = formatTimeLeft(timeLeft);
     setCircleDasharray();
 
-    if (timeLeft === 0) {
+    if (state.isRunning && timeLeft > 0) {
+      startTime = Date.now() - (timePassed * 1000);
+
+      timerInterval = setInterval(() => {
+        timePassed = Math.floor((Date.now() - startTime) / 1000);
+        timeLeft = TIME_LIMIT - timePassed;
+
+        timerText.innerHTML = formatTimeLeft(timeLeft);
+        setCircleDasharray();
+
+        saveTimerState();
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          localStorage.removeItem('focusTimerState');
+          alert('Focus session complete!');
+          resetTimer();
+        }
+      }, 250);
+
+      timerPauseBtn.classList.remove('hidden');
+      timerStartBtn.classList.add('hidden');
+      timerDurationInput.disabled = true;
+    }
+  } catch (err) {
+    console.error('Failed to load timer state', err);
+  }
+}
+
+function startTimer() {
+  if (timerInterval) return;
+
+  TIME_LIMIT = getTimerDuration();
+  timerDurationInput.disabled = true;
+
+  startTime = Date.now() - (timePassed * 1000);
+
+  saveTimerState();
+
+  timerInterval = setInterval(() => {
+    timePassed = Math.floor((Date.now() - startTime) / 1000);
+
+    timeLeft = TIME_LIMIT - timePassed;
+
+    timerText.innerHTML = formatTimeLeft(timeLeft);
+    setCircleDasharray();
+
+    saveTimerState();
+
+    if (timeLeft <= 0) {
       clearInterval(timerInterval);
       timerInterval = null;
+      localStorage.removeItem('focusTimerState');
       alert('Focus session complete!');
       resetTimer();
     }
-  }, 1000);
+  }, 250);
+
+  timerPauseBtn.classList.remove('hidden');
+  timerStartBtn.classList.add('hidden');
 }
 
 function pauseTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
+
+  saveTimerState();
+
   timerPauseBtn.classList.add('hidden');
   timerStartBtn.classList.remove('hidden');
 }
@@ -224,12 +306,18 @@ function pauseTimer() {
 function resetTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
+
+  localStorage.removeItem('focusTimerState');
+
   timePassed = 0;
   TIME_LIMIT = getTimerDuration();
   timeLeft = TIME_LIMIT;
+
   timerDurationInput.disabled = false;
+
   timerText.innerHTML = formatTimeLeft(timeLeft);
   timerPathRemaining.setAttribute("stroke-dasharray", "283 283");
+
   timerPauseBtn.classList.add('hidden');
   timerStartBtn.classList.remove('hidden');
 }
@@ -561,11 +649,11 @@ function renderTasks() {
       ? `<div class="tasks-empty-state">${emptyStateText}</div>`
       : '';
 
-    tasksSection.innerHTML = actionBar +
-                             renderGroup(titlePrefix + '⚠ Due soon', dueSoon, 'var(--color-text-danger)', true)
-                             renderGroup(titlePrefix + 'This week', thisWeek, 'var(--color-text-secondary)', true) +
-                             renderGroup(titlePrefix + 'Completed', completed, 'var(--color-text-tertiary)') +
-                             emptyState;
+   tasksSection.innerHTML = actionBar +
+                         renderGroup(titlePrefix + '⚠ Due soon', dueSoon, 'var(--color-text-danger)', true) +
+                         renderGroup(titlePrefix + 'This week', thisWeek, 'var(--color-text-secondary)', true) +
+                         renderGroup(titlePrefix + 'Completed', completed, 'var(--color-text-tertiary)') +
+                         emptyState;
   }
                            
   document.querySelectorAll('.task-item').forEach(el => {
@@ -912,6 +1000,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   store.fetchInitialData();
+  loadTimerState();
   
   const calendarBtn = document.getElementById('calendar-btn');
   const allTasksBtn = document.getElementById('all-tasks-btn');
@@ -1063,14 +1152,6 @@ extractBtn.addEventListener('click', async () => {
 clearBtn.addEventListener('click', () => {
   pasteInput.value = '';
   store.clearExtracted();
-});
-
-addItemsBtn.addEventListener('click', () => {
-  if (store.currentPaste) {
-    store.addTasks(store.currentPaste);
-    store.clearExtracted();
-    pasteInput.value = '';
-  }
 });
 
 downloadBtn.addEventListener('click', () => {
