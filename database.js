@@ -26,9 +26,22 @@ function initDb() {
       confidence_score REAL,
       notes TEXT,
       archived INTEGER DEFAULT 0,
+      estimated_duration INTEGER,
+      is_estimated_duration_min BOOLEAN,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (subject_id) REFERENCES subjects(id)
     )`);
+
+    db.all('PRAGMA table_info(tasks)', (err, columns) => {
+      if (err) return;
+      const columnNames = columns.map(column => column.name);
+      if (!columnNames.includes('estimated_duration')) {
+        db.run('ALTER TABLE tasks ADD COLUMN estimated_duration INTEGER');
+      }
+      if (!columnNames.includes('is_estimated_duration_min')) {
+        db.run('ALTER TABLE tasks ADD COLUMN is_estimated_duration_min BOOLEAN');
+      }
+    });
 
     // Pre-populate some subjects if empty
     db.get('SELECT COUNT(*) as count FROM subjects', (err, row) => {
