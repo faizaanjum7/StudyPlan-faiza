@@ -170,10 +170,43 @@ function renderSidebarSubjects() {
   listEl.innerHTML = subjects.map(s => {
     const n = countBySubject[s.id] ?? 0;
     const safeColor = s.color ? escapeHtml(s.color) : 'var(--color-text-info)';
-    return `<div class="nav-item subject-sidebar-item" data-subject-id="${escapeHtml(s.id)}">
-      <span class="nav-dot" style="background:${safeColor}"></span>${escapeHtml(s.name)}<span class="badge">${n}</span>
-    </div>`;
+return `
+  <div class="nav-item subject-sidebar-item" data-subject-id="${escapeHtml(s.id)}">
+
+    <div class="subject-sidebar-content">
+      <span class="nav-dot" style="background:${safeColor}"></span>
+
+      <span class="subject-name">
+        ${escapeHtml(s.name)}
+      </span>
+    </div>
+
+    <div class="subject-sidebar-actions">
+      <span class="badge">${n}</span>
+
+      <button
+        class="delete-subject-btn"
+        data-subject-id="${escapeHtml(s.id)}"
+        title="Delete subject"
+      >
+        ✕
+      </button>
+    </div>
+
+  </div>
+`;
   }).join('');
+
+  document.querySelectorAll('.delete-subject-btn')
+  .forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      const subjectId = btn.dataset.subjectId;
+
+      store.deleteSubject(subjectId);
+    });
+  });
 }
 
 const newTaskModal = document.getElementById('new-task-modal');
