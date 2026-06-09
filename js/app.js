@@ -1132,11 +1132,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  document.getElementById('cal-prev').addEventListener('click', () => {
-    currentMonthDate.setMonth(currentMonthDate.getMonth() - 1);
-    renderCalendar();
-  });
-
   document.getElementById('cal-next').addEventListener('click', () => {
     currentMonthDate.setMonth(currentMonthDate.getMonth() + 1);
     renderCalendar();
@@ -1379,12 +1374,4 @@ if (quoteEl) {
   const index = Math.abs(hash % quotes.length);
 
   quoteEl.textContent = quotes[index];
-}
-
-const calendarDownloadBtn = document.getElementById('calendar-download-btn');
-
-if (calendarDownloadBtn) {
-  calendarDownloadBtn.addEventListener('click', () => {
-    downloadCalendar();
-  });
 }
